@@ -2,6 +2,6 @@
 #include <stdlib.h>
 
 int main(){
-    printf("Test the repo!");
+    printf("The repo work successfully");
     return 0;
 }
