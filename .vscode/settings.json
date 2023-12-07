@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "classroom.h": "c",
+        "thread": "c",
+        "any": "c",
+        "vector": "c",
+        "stdio.h": "c",
+        "stdbool.h": "c"
+    }
+}
