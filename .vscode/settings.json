@@ -5,6 +5,7 @@
         "any": "c",
         "vector": "c",
         "stdio.h": "c",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "type_traits": "c"
     }
 }
