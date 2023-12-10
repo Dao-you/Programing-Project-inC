@@ -12,4 +12,7 @@ struct _Classroom {
     bool  usage[7][13];    // 使用情況
 };
 
+bool read_classroom_by_row(struct _Classroom *classroom, int row);
+bool read_classroom_by_id(struct _Classroom *classroom, int id);
+
 #endif
