@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "classroom.h"
 
 // return if the data find successfully
@@ -10,7 +11,7 @@ bool read_classroom_by_row(struct _Classroom *classroom, int row) {
 	FILE* fp = fopen("./Classroom_data/classroom_filtted_data.csv", "r");
 	
 	// check if file be opened successfully
-	if (!fp)    printf("Can't open classroom file\n");
+	if (!fp)    printf("Can't open the classroom file\n");
 	else
 	{
 		// to save a line of the file
@@ -65,10 +66,10 @@ bool read_classroom_by_row(struct _Classroom *classroom, int row) {
 			value = strtok(NULL, ",");
 			column++;
 		}
+		fclose(fp);
+		return true;
 	}
-	
-	fclose(fp);
-	return true;
+	return false;
 }
 
 // return if the data find successfully
@@ -77,7 +78,7 @@ bool read_classroom_by_id(struct _Classroom *classroom, int id) {
 	FILE* fp = fopen("./Classroom_data/classroom_filtted_data.csv", "r");
 	
 	// check if file be opened successfully
-	if (!fp)    printf("Can't open classroom file\n");
+	if (!fp)   printf("Can't open the classroom file\n");
 	else
 	{
 		// to save a line of the file
@@ -145,10 +146,91 @@ bool read_classroom_by_id(struct _Classroom *classroom, int id) {
 			value = strtok(NULL, ",");
 			column++;
 		}
-	}
 	
+		fclose(fp);
+		return true;	
+	}
+	return false;
+}
+
+// return if the modify success
+bool update_classroom_usage(struct _Classroom *classroom){
+	int i, j; // for for loop
+
+	// open file by route
+	FILE* fp = fopen("./Classroom_data/classroom_filtted_data.csv", "r+");
+	
+	// check if file be opened successfully
+	if (!fp)   printf("Can't open the classroom file\n");
+	else
+	{	
+		// to save a line of the file
+		char buffer[1024];
+
+		// to save a column returned by function
+		char* value;
+
+		// to save the pointer status
+		int column = 0;
+
+		// to check if data find successfully
+		bool flag = false;
+
+		// to save the line where data in
+		long long line_pos = -1;
+
+		// to save length for the line to modifying
+		size_t line_length;
+
+		// to save length of new data for line length cut off
+		int data_length;
+
+		// to find such the row
+		while ( fgets(buffer, 1024, fp) != NULL )
+		{
+			line_length = strlen(buffer) + 1;
+			value = strtok(buffer, ",");
+			if( atoi(value) == classroom -> id ){
+				// printf("Find the data %d!\n", atoi(value) );
+				flag = true;
+				line_pos = ftell(fp);
+				fseek(fp, line_pos - line_length, SEEK_SET);
+
+				// put static data in the file
+				// and calculate data_length at the same time
+				data_length = fprintf(fp, "%06d,%s,%d,%s,%d",
+									  classroom -> id,
+									  classroom -> nickname,
+									  classroom -> type,
+									  classroom -> wholename,
+									  classroom -> capacity     );
+				
+				// put the usage data via loop
+				// calculate the data_length, too
+				for (i = 0; i < 7; i++){
+					for (j = 0; j < 13; j++){
+						data_length += fprintf(fp, ",%d", 
+						                       classroom -> usage[i][j]);
+					}
+				}
+				data_length += fprintf(fp, "\n");
+
+				// if the updating data sorter than orginal one:
+				// fill the line with spaces to match the original line length
+                for (int i = data_length; i < strlen(buffer); i++) {
+                    fputc(' ', fp);
+                }
+				
+				fseek(fp, line_pos, SEEK_SET);
+
+				fclose(fp);
+				return true;
+			}
+		}
+	}
+
 	fclose(fp);
-	return true;	
+	return false;
 }
 
 // int main() {	
@@ -213,5 +295,14 @@ bool read_classroom_by_id(struct _Classroom *classroom, int id) {
 // 			}
 // 		}
 // 	}
+
+// 	printf("\n----------------------\n");
+
+// 	int x = 5, y = 7, v = 1;
+// 	printf("Modify the %d usage data which %d class in the %d day to %d.", 
+// 			classroom.id, y, x, v);
+
+// 	classroom.usage[x-1][y-1] = v;
+// 	update_classroom_usage(&classroom);
 
 // }
