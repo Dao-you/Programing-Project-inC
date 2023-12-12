@@ -188,12 +188,16 @@ bool update_classroom_usage(struct _Classroom *classroom){
 		// to find such the row
 		while ( fgets(buffer, 1024, fp) != NULL )
 		{
+			// record the line length included the '\n'
 			line_length = strlen(buffer) + 1;
 			value = strtok(buffer, ",");
 			if( atoi(value) == classroom -> id ){
 				// printf("Find the data %d!\n", atoi(value) );
 				flag = true;
 				line_pos = ftell(fp);
+
+				// move the file pointer to the head of the current line
+				// because fgets() will move the pointer to the last
 				fseek(fp, line_pos - line_length, SEEK_SET);
 
 				// put static data in the file
@@ -221,6 +225,7 @@ bool update_classroom_usage(struct _Classroom *classroom){
                     fputc(' ', fp);
                 }
 				
+				// move the pointer back to the last
 				fseek(fp, line_pos, SEEK_SET);
 
 				fclose(fp);
