@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "userdata.h"
 
 int main()
 {
-
+    system("chcp 65001");
+    struct Userdata userdata_table[5500];
     int i,acc,pas;
-    char pas[20],box[20],text[20];
+    char box[20],text[20];
 
     printf("歡迎使用教室與討論室管理系統!\n\n教職員工人數為500人,一般學生人數為5000人\n\n");
     printf("帳號格式如下:\n\n");
@@ -21,6 +23,8 @@ int main()
         scanf("%d",&acc);
     }
 
+    read_userdata_by_row(userdata_table,acc);
+/*
     if(){
         printf("\n請更改密碼!\n");
         printf("請輸入密碼:");
@@ -35,5 +39,6 @@ int main()
             scanf("%s",pas);
         }
     }
+*/
     return 0;
 }
