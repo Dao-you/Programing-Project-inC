@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "userdata.h"
+
 void read_userdata_by_row(struct Userdata *userdata,int row){
 
     int i;

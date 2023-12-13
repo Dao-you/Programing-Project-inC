@@ -3,6 +3,10 @@
 #include <string.h>
 #include "userdata.h"
 
+// 先判斷密碼是否為預設密碼1234
+// 若是 則需改新密碼 且不能與預設密碼相同
+// 否則 驗證密碼是否正確
+
 int main()
 {
     system("chcp 65001");
