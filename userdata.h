@@ -3,12 +3,12 @@
 
 #include <stdbool.h>
 
-struct Userdata{
-    int account[20]; //±b¸¹
-    char password[20]; //±K½X
+struct _Userdata{
+    char account[20];
+    char password[20];
 };
 
-void read_userdata_by_row(struct Userdata *userdata,int row);
-bool update_userdata(struct Userdata *userdata,int pos,char *changed_password);
+bool read_userdata_by_row(struct _Userdata *userdata,int row);
+bool update_userdata(struct _Userdata *userdata);
 
 #endif

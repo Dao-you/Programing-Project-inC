@@ -4,10 +4,11 @@
 #include <stdbool.h>
 #include "userdata.h"
 
-void read_userdata_by_row(struct Userdata *userdata,int row){
-
+bool read_userdata_by_row(struct _Userdata *userdata,int row){
     int i;
-    char buffer[1024],*Token;
+
+    if((row>500&&row<1120001)||(row<0)||(row>1125000))
+        return false;
 
     if(row>500){
         row=row-1119500;
@@ -18,16 +19,6 @@ void read_userdata_by_row(struct Userdata *userdata,int row){
         printf("Can't open the user file\n");
         return false;
     }
-
-    for(i=1;i<=row;i++){
-        fgets(buffer,1024,fp);
-    }
-
-    Token=strtok(buffer,",");
-    printf("%s",Token);
-    Token=strtok(NULL,",");
-    printf("%s",Token);
-    /*
     else{
         char buffer[1024];
         int now=0,column=0;
@@ -42,7 +33,7 @@ void read_userdata_by_row(struct Userdata *userdata,int row){
         while(value){
             switch(column){
                 case 0:
-                    userdata->account=atoi(value);
+                    strcpy(userdata->account,value);
                     break;
                 case 1:
                     strcpy(userdata->password,value);
@@ -54,34 +45,46 @@ void read_userdata_by_row(struct Userdata *userdata,int row){
         fclose(fp);
         return true;
     }
-    */
 }
 
-bool update_userdata(struct Userdata *userdata,int pos,char *changed_password){
-    if(pos>500){
-        pos=pos-1119500;
-    }
+bool update_userdata(struct _Userdata *userdata){
+    long long line_pos = -1;
+    size_t line_length;
+    int data_length;
+    char *value;
 
     FILE *fp=fopen("./user_data/userdata.csv","r+");
+    bool flag = false;
+
     if(!fp){
         printf("Can't open the user file\n");
-        fclose(fp);
         return false;
     }
     else{
         char buffer[1024];
-        int i;
-
-        for(i=1;i<=pos;i++){
-            fgets(buffer,1024,fp);
-
+        while( fgets(buffer,1024,fp) != NULL ){
+            line_length = strlen(buffer) + 1;
+            value=strtok(buffer, ",");
+            if(!(strcmp(value,userdata->account))){
+                flag = true;
+                line_pos = ftell(fp);
+                break;
+            }
         }
 
-        strtok(buffer,",");
-        strtok(NULL,",");
-        fseek(fp,0,SEEK_SET);
-        fprintf(fp,"%s",changed_password);
-        fclose(fp);
-        return true;
+        if(flag){
+            fseek(fp, line_pos - line_length, SEEK_SET);
+            data_length=fprintf(fp,"%s,%s",userdata->account,userdata->password);
+            for (int i = data_length; i < strlen(buffer); i++) {
+                fputc(' ', fp);
+            }
+            fclose(fp);
+            return true;
+        }
+        else{
+            fclose(fp);
+            return false;
+        }
+
     }
 }

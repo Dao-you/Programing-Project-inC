@@ -10,39 +10,34 @@
 int main()
 {
     system("chcp 65001");
-    struct Userdata userdata_table[5500];
-    int i,acc,pas;
-    char box[20],text[20];
+    struct _Userdata userdata_1;
+    int i;
+    char box[20],text[20],acc[20],pas[20];
 
     printf("歡迎使用教室與討論室管理系統!\n\n教職員工人數為500人,一般學生人數為5000人\n\n");
     printf("帳號格式如下:\n\n");
     printf("教職員工:001-500\n");
     printf("一般學生:1120001-1125000\n\n");
-    printf("請輸入帳號:");
-    scanf("%d",&acc);
 
-    while((acc>500&&acc<1120001)||(acc<0)||(acc>1125000)){
-        printf("輸入帳號格式錯誤!\n請重新輸入!\n\n");
+    printf("請輸入帳號:");
+    scanf("%s",acc);
+    printf("\n請輸入密碼:");
+    scanf("%s",pas);
+    while(!(read_userdata_by_row(&userdata_1, atoi(acc)) && (strcmp(userdata_1.password, pas)))){
+        printf("\n帳號密碼錯誤!\n\n");
         printf("請輸入帳號:");
-        scanf("%d",&acc);
+        scanf("%s",acc);
+        printf("\n請輸入密碼:");
+        scanf("%s",pas);
     }
 
-    read_userdata_by_row(userdata_table,acc);
-/*
-    if(){
+    if(strcmp(userdata_1.password,"1234")){
         printf("\n請更改密碼!\n");
         printf("請輸入密碼:");
         scanf("%s",pas);
+        strcpy(userdata_1.password, pas);
+        update_userdata(&userdata_1);
     }
-    else{
-        printf("\n請輸入密碼:");
-        scanf("%s",pas);
-        while(){
-            printf("輸入密碼錯誤!\n請重新輸入!\n\n");
-            printf("請輸入密碼:");
-            scanf("%s",pas);
-        }
-    }
-*/
+
     return 0;
 }
