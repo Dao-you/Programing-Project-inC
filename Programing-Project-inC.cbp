@@ -31,9 +31,23 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename=".gitattributes" />
+		<Unit filename=".gitignore" />
+		<Unit filename="Programing-Project-inC.cbp" />
+		<Unit filename="classroom.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="classroom.h" />
+		<Unit filename="login.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="userdata.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="userdata.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

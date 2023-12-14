@@ -3,10 +3,6 @@
 #include <string.h>
 #include "userdata.h"
 
-// 先判斷密碼是否為預設密碼1234
-// 若是 則需改新密碼 且不能與預設密碼相同
-// 否則 驗證密碼是否正確
-
 int main()
 {
     system("chcp 65001");
@@ -19,10 +15,16 @@ int main()
     printf("教職員工:001-500\n");
     printf("一般學生:1120001-1125000\n\n");
 
+    printf("預設密碼格式如下:\n\n");
+    printf("教職員工與一般學生的預設密碼皆為1234\n");
+    printf("請初次使用本系統的使用者登入後更新密碼!\n\n");
+
     printf("請輸入帳號:");
     scanf("%s",acc);
     printf("\n請輸入密碼:");
     scanf("%s",pas);
+
+    //驗證密碼是否正確
     while(!(read_userdata_by_row(&userdata_1, atoi(acc)) && (strcmp(userdata_1.password, pas)))){
         printf("\n帳號密碼錯誤!\n\n");
         printf("請輸入帳號:");
@@ -31,6 +33,7 @@ int main()
         scanf("%s",pas);
     }
 
+    //判斷密碼是否為預設密碼1234,若為預設密碼則請使用者更新密碼
     if(strcmp(userdata_1.password,"1234")){
         printf("\n請更改密碼!\n");
         printf("請輸入密碼:");
