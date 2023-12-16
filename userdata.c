@@ -1,17 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
+#include <stdbool.h> // include the bool standard function.
 #include "userdata.h"
 
-bool read_userdata_by_row(struct _Userdata *userdata,int row){
+// Read the userdata,the first argument is struct _Userdata and pass by pointer,
+// the second argument will be the id to query.
+bool read_userdata_by_id(struct _Userdata *userdata,int id){
     int i;
 
-    if((row>500&&row<1120001)||(row<0)||(row>1125000))
+    if((id>500&&id<1120001)||(id<0)||(id>1125000))
         return false;
 
-    if(row>500){
-        row=row-1119500;
+    if(id>500){
+        id=id-1119500;
     }
 
     FILE *fp=fopen("./user_data/userdata.csv","r");
@@ -23,7 +25,7 @@ bool read_userdata_by_row(struct _Userdata *userdata,int row){
         char buffer[1024];
         int now=0,column=0;
 
-        while(now<row+1){
+        while(now<id+1){
             now++;
             if(fgets(buffer,1024,fp)==NULL) return false;
         }
@@ -47,6 +49,7 @@ bool read_userdata_by_row(struct _Userdata *userdata,int row){
     }
 }
 
+// Update the userdata, argument is struct _Userdata and pass by pointer.
 bool update_userdata(struct _Userdata *userdata){
     long long line_pos = -1;
     size_t line_length;

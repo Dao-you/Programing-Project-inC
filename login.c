@@ -5,10 +5,10 @@
 
 int main()
 {
-    system("chcp 65001");
+    system("chcp 65001"); // 將控制台編碼設置為UTF-8
     struct _Userdata userdata_1;
     int i;
-    char box[20],text[20],acc[20],pas[20];
+    char acc[20],pas[20];
 
     printf("歡迎使用教室與討論室管理系統!\n\n教職員工人數為500人,一般學生人數為5000人\n\n");
     printf("帳號格式如下:\n\n");
@@ -24,8 +24,8 @@ int main()
     printf("\n請輸入密碼:");
     scanf("%s",pas);
 
-    //驗證密碼是否正確
-    while(!(read_userdata_by_row(&userdata_1, atoi(acc)) && (strcmp(userdata_1.password, pas)))){
+    // 驗證帳號密碼是否正確，若不正確則請使用者重新輸入帳號密碼
+    while(!(read_userdata_by_id(&userdata_1, atoi(acc)) && (strcmp(userdata_1.password,pas)))){
         printf("\n帳號密碼錯誤!\n\n");
         printf("請輸入帳號:");
         scanf("%s",acc);
@@ -33,7 +33,7 @@ int main()
         scanf("%s",pas);
     }
 
-    //判斷密碼是否為預設密碼1234,若為預設密碼則請使用者更新密碼
+    // 判斷密碼是否為預設密碼1234，若為預設密碼則請使用者更新密碼
     if(strcmp(userdata_1.password,"1234")){
         printf("\n請更改密碼!\n");
         printf("請輸入密碼:");
