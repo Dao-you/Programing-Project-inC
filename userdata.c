@@ -40,6 +40,9 @@ bool read_userdata_by_id(struct _Userdata *userdata,int id){
                 case 1:
                     strcpy(userdata->password,value);
                     break;
+                case 2:
+                    strcpy(userdata->symbol,&value);
+                    break;
             }
             value=strtok(NULL,",");
             column++;
@@ -77,7 +80,10 @@ bool update_userdata(struct _Userdata *userdata){
 
         if(flag){
             fseek(fp, line_pos - line_length, SEEK_SET);
-            data_length=fprintf(fp,"%s,%s",userdata->account,userdata->password);
+            data_length=fprintf(fp,"%s,%s,%c",
+                                userdata->account,
+                                userdata->password,
+                                userdata->symbol);
             for (int i = data_length; i < strlen(buffer); i++) {
                 fputc(' ', fp);
             }
