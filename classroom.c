@@ -27,7 +27,6 @@ bool read_classroom_by_row(struct _Classroom *classroom, int row) {
 			if( fgets(buffer, 1024, fp) == NULL ) return false;
 		}
 
-		printf("[Debug]%s\n", buffer);
 		// splitting the data
 		char* value = strtok(buffer, ",");
 		
