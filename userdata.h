@@ -4,8 +4,8 @@
 #include <stdbool.h>
 
 struct _Userdata{
-    char account[20]; //±b¸¹
-    char password[20]; //±K½X
+    char account[20]; //å¸³è™Ÿ
+    char password[20]; //å¯†ç¢¼
 };
 
 bool read_userdata_by_id(struct _Userdata *userdata,int id);
