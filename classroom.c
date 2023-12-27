@@ -27,6 +27,7 @@ bool read_classroom_by_row(struct _Classroom *classroom, int row) {
 			if( fgets(buffer, 1024, fp) == NULL ) return false;
 		}
 
+		printf("[Debug]%s\n", buffer);
 		// splitting the data
 		char* value = strtok(buffer, ",");
 		
@@ -152,6 +153,42 @@ bool read_classroom_by_id(struct _Classroom *classroom, int id) {
 	return false;
 }
 
+// input usage array[7*13] that tags time wanna use "true" or 1
+// and input a unmalloc pointer of _Classroom array to save data
+// return the number of avaliable classrooms
+int search_classroom_by_usage(struct _Classroom **classroom_list, bool *usage){
+    struct _Classroom classroom_buffer;
+    int avaliable_number = 0;
+    bool flag;
+    int i, j, k;
+
+    *classroom_list = malloc(sizeof(struct _Classroom) * CLASSROOM_MAX_NUMBER);
+
+    i = 1;
+    while (read_classroom_by_row(&classroom_buffer, i) == true){
+        flag = true;
+        for (j = 0; j < 7; j++){
+            for (k = 0; k < 13; k++){
+                if (usage[j*7+k] == true){
+                    if (classroom_buffer.usage[j][k] == true){
+                        flag = false;
+						break;
+                    }
+                }
+            }
+			if(!flag) break;
+        }
+        if (flag){
+            (*classroom_list)[avaliable_number] = classroom_buffer;
+            avaliable_number++;
+        }
+        i++;
+    }
+
+    *classroom_list = realloc(*classroom_list, sizeof(struct _Classroom) * avaliable_number);
+	return avaliable_number;
+}
+
 // return if the modify success
 bool update_classroom_usage(struct _Classroom *classroom){
 	int i, j; // for for loop
@@ -237,76 +274,98 @@ bool update_classroom_usage(struct _Classroom *classroom){
 	return false;
 }
 
-// int main() {	
-// 	int i, j, k;
-// 	struct _Classroom classroom;
-// 	struct _Classroom classroom_table[10];
-// 	// set the console to UTF-8 codec
-// 	system("chcp 65001");
+/*
+int main() {	
+	int i, j, k;
+	struct _Classroom classroom;
+	struct _Classroom classroom_table[10];
+	// set the console to UTF-8 codec
+	system("chcp 65001");
 	
-// 	read_classroom_by_row(&classroom, 0+40);
-// 	printf("%d\t", classroom.id);
-// 	printf("%d\t", classroom.type);
-// 	printf("%s\t", classroom.wholename);
-// 	printf("\n");
-// 	for (j = 0; j < 7; j++)
-// 	{
-// 		for (k = 0; k < 13; k++)
-// 		{
-// 			// if(classroom.usage[j][k]) printf("1 ");
-// 			// else                      printf("0 ");
-// 			printf("%d ", classroom.usage[j][k]);
-// 		}
-// 	}
+	read_classroom_by_row(&classroom, 120);
+	printf("%d\t", classroom.id);
+	printf("%d\t", classroom.type);
+	printf("%s\t", classroom.wholename);
+	printf("\n");
+	for (j = 0; j < 7; j++)
+	{
+		for (k = 0; k < 13; k++)
+		{
+			// if(classroom.usage[j][k]) printf("1 ");
+			// else                      printf("0 ");
+			printf("%d ", classroom.usage[j][k]);
+		}
+	}
 
-// 	printf("\n----------------------\n");
+	printf("\n----------------------\n");
 
-// 	for (i = 0; i < 10; i++){
+	for (i = 0; i < 10; i++){
 
-// 		read_classroom_by_row(classroom_table+i, i+40);
-// 		printf("%d\t", classroom_table[i].id);
-// 		printf("%d\t", classroom_table[i].type);
-// 		printf("%s\t", classroom_table[i].wholename);
-// 		printf("\n");
-// 		for (j = 0; j < 7; j++)
-// 		{
-// 			for (k = 0; k < 13; k++)
-// 			{
-// 				printf("%d ", classroom_table[i].usage[j][k]);
-// 			}
-// 		}
+		read_classroom_by_row(classroom_table+i, i+40);
+		printf("%d\t", classroom_table[i].id);
+		printf("%d\t", classroom_table[i].type);
+		printf("%s\t", classroom_table[i].wholename);
+		printf("\n");
+		for (j = 0; j < 7; j++)
+		{
+			for (k = 0; k < 13; k++)
+			{
+				printf("%d ", classroom_table[i].usage[j][k]);
+			}
+		}
 		
-// 		printf("\n");
+		printf("\n");
 
-// 	}
+	}
 
-// 	printf("\n----------------------\n");
+	printf("\n----------------------\n");
 
-// 	int id = 30211;
-// 	printf("Search ID %d:\n", id);
-// 	if( read_classroom_by_id(&classroom, id) ){
-// 		printf("%d\t", classroom.id);
-// 		printf("%d\t", classroom.type);
-// 		printf("%s\t", classroom.wholename);
-// 		printf("\n");
-// 		for (j = 0; j < 7; j++)
-// 		{
-// 			for (k = 0; k < 13; k++)
-// 			{
-// 				// if(classroom.usage[j][k]) printf("1 ");
-// 				// else                      printf("0 ");
-// 				printf("%d ", classroom.usage[j][k]);
-// 			}
-// 		}
-// 	}
+	int id = 30211;
+	printf("Search ID %d:\n", id);
+	if( read_classroom_by_id(&classroom, id) ){
+		printf("%d\t", classroom.id);
+		printf("%d\t", classroom.type);
+		printf("%s\t", classroom.wholename);
+		printf("\n");
+		for (j = 0; j < 7; j++)
+		{
+			for (k = 0; k < 13; k++)
+			{
+				// if(classroom.usage[j][k]) printf("1 ");
+				// else                      printf("0 ");
+				printf("%d ", classroom.usage[j][k]);
+			}
+		}
+	}
 
-// 	printf("\n----------------------\n");
+	printf("\n----------------------\n");
 
-// 	int x = 5, y = 7, v = 1;
-// 	printf("Modify the %d usage data which %d class in the %d day to %d.", 
-// 			classroom.id, y, x, v);
+	int x = 5, y = 7, v = 1;
+	printf("Modify the %d usage data which %d class in the %d day to %d.\n", 
+			classroom.id, y, x, v);
 
-// 	classroom.usage[x-1][y-1] = v;
-// 	update_classroom_usage(&classroom);
+	classroom.usage[x-1][y-1] = v;
+	update_classroom_usage(&classroom);
 
-// }
+	printf("\n----------------------\n");
+
+	bool search_usage[7*13] = {0};
+	int length_ava_list;
+	struct _Classroom *ava_list;
+	search_usage[1*7+2] = 1;
+	search_usage[1*7+3] = 1;
+	search_usage[4*7+1] = 1;
+	length_ava_list = search_classroom_by_usage(&ava_list, search_usage);
+	printf("There are %d avaliable for the usage\n", length_ava_list);
+	
+	for (i = 0; i < length_ava_list; i++){
+		printf("%d\t", ava_list[i].id);
+		printf("%s\t", ava_list[i].nickname);
+		printf("\n");
+	}
+
+	free(ava_list);
+
+	return 0;
+}
+*/

@@ -3,8 +3,10 @@
 
 #include <stdbool.h>
 
+#define CLASSROOM_MAX_NUMBER 256
+
 struct _Classroom {
-    short id;              // 編號
+    int id;              // 編號
     char  nickname[30];    // 教室簡稱
     char  wholename[60];   // 教室全名
     short type;            // 教室類型
