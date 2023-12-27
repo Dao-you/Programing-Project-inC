@@ -12,10 +12,10 @@ int main()
 
     // Test the read function
     ///*
-    read_userdata_by_id(&userdata_1,5);
-    printf("%s, %s, %s\n", userdata_1.account,
-                           userdata_1.password,
-                           userdata_1.symbol);
+    // read_userdata_by_id(&userdata_1,15);
+    // printf("%s, %s, %s\n", userdata_1.account,
+    //                        userdata_1.password,
+    //                        userdata_1.symbol);
     //*/
 
     printf("歡迎使用教室與討論室管理系統!\n\n教職員工人數為500人,一般學生人數為5000人\n\n");
@@ -33,7 +33,7 @@ int main()
     scanf("%s",pas);
 
     // 驗證帳號密碼是否正確，若不正確則請使用者重新輸入帳號密碼
-    while(!(read_userdata_by_id(&userdata_1, atoi(acc)) && (strcmp(userdata_1.password,pas)))){
+    while(!(read_userdata_by_id(&userdata_1, atoi(acc)) && !(strcmp(userdata_1.password,pas)))){
         printf("\n帳號密碼錯誤!\n\n");
         printf("請輸入帳號:");
         scanf("%s",acc);
@@ -42,7 +42,7 @@ int main()
     }
 
     // 判斷密碼是否為預設密碼1234，若為預設密碼則請使用者更新密碼
-    if(strcmp(userdata_1.password,"1234")){
+    if(!strcmp(userdata_1.password,"1234")){
         printf("\n請更改密碼!\n");
         printf("請輸入密碼:");
         scanf("%s",pas);

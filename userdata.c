@@ -41,7 +41,7 @@ bool read_userdata_by_id(struct _Userdata *userdata,int id){
                     strcpy(userdata->password,value);
                     break;
                 case 2:
-                    strcpy(userdata->symbol,&value);
+                    strcpy(userdata->symbol,value);
                     break;
             }
             value=strtok(NULL,",");
