@@ -156,13 +156,19 @@ bool read_classroom_by_id(struct _Classroom *classroom, int id) {
 // and input a unmalloc pointer of _Classroom array to save data
 // return the number of avaliable classrooms
 int search_classroom_by_usage(struct _Classroom **classroom_list, bool *usage){
-    struct _Classroom classroom_buffer;
+    // save reading data temporary
+	struct _Classroom classroom_buffer;
+	// the number of the avaliable classrooms
     int avaliable_number = 0;
+	// flag for the loop break once when unavaliable
     bool flag;
+	// for for loop
     int i, j, k;
 
+	// turn it as an array
     *classroom_list = malloc(sizeof(struct _Classroom) * CLASSROOM_MAX_NUMBER);
 
+	// serch every line
     i = 1;
     while (read_classroom_by_row(&classroom_buffer, i) == true){
         flag = true;
@@ -170,6 +176,7 @@ int search_classroom_by_usage(struct _Classroom **classroom_list, bool *usage){
             for (k = 0; k < 13; k++){
                 if (usage[j*7+k] == true){
                     if (classroom_buffer.usage[j][k] == true){
+						// if this classroom unavaliable then
                         flag = false;
 						break;
                     }
@@ -177,6 +184,8 @@ int search_classroom_by_usage(struct _Classroom **classroom_list, bool *usage){
             }
 			if(!flag) break;
         }
+		// no break, means classroom avaliable
+		// store it in the list and update the number indicator
         if (flag){
             (*classroom_list)[avaliable_number] = classroom_buffer;
             avaliable_number++;
@@ -184,6 +193,7 @@ int search_classroom_by_usage(struct _Classroom **classroom_list, bool *usage){
         i++;
     }
 
+	// update the array size to save memory
     *classroom_list = realloc(*classroom_list, sizeof(struct _Classroom) * avaliable_number);
 	return avaliable_number;
 }
