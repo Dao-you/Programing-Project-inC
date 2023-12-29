@@ -11,5 +11,6 @@ struct _Userdata{
 
 bool read_userdata_by_id(struct _Userdata *userdata,int id);
 bool update_userdata(struct _Userdata *userdata);
+struct _Userdata login();
 
 #endif

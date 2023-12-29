@@ -1,3 +1,4 @@
+/*
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,12 +12,10 @@ int main()
     char acc[20],pas[20];
 
     // Test the read function
-    /*
     read_userdata_by_id(&userdata_1,15);
     printf("%s, %s, %s\n", userdata_1.account,
                            userdata_1.password,
                            userdata_1.symbol);
-    */
 
     printf("歡迎使用教室與討論室管理系統!\n\n教職員工人數為500人,一般學生人數為5000人\n\n");
     printf("帳號格式如下:\n\n");
@@ -52,3 +51,4 @@ int main()
 
     return 0;
 }
+*/
