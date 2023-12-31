@@ -195,12 +195,12 @@ struct _Userdata login(){
         printf("\n請輸入密碼:");
         scanf("%s",password);
     }
-    
+
     // 判斷密碼是否為預設密碼1234，若為預設密碼則請使用者更新密碼
     if(!strcmp(userdata.password,"1234")){
         printf("\n請更改密碼!\n");
         password_modify(&userdata);
     }
-
+    
     return userdata;
 }

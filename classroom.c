@@ -152,10 +152,11 @@ bool read_classroom_by_id(struct _Classroom *classroom, int id) {
 	return false;
 }
 
-// input usage array[7*13] that tags time wanna use "true" or 1
-// and input a unmalloc pointer of _Classroom array to save data
+// input a unmalloc pointer of _Classroom array to save data
+// and input the expected capacity and type of classroom
+// the last is the usage array[7*13] that tags time wanna use "true" or 1
 // return the number of avaliable classrooms
-int search_classroom_by_usage(struct _Classroom **classroom_list, bool *usage){
+int search_classroom(struct _Classroom **classroom_list,int type, int capacity, bool *usage){
     // save reading data temporary
 	struct _Classroom classroom_buffer;
 	// the number of the avaliable classrooms
@@ -172,19 +173,28 @@ int search_classroom_by_usage(struct _Classroom **classroom_list, bool *usage){
     i = 1;
     while (read_classroom_by_row(&classroom_buffer, i) == true){
         flag = true;
-        for (j = 0; j < 7; j++){
-            for (k = 0; k < 13; k++){
-                if (usage[j*7+k] == true){
-                    if (classroom_buffer.usage[j][k] == true){
-						// if this classroom unavaliable then
-                        flag = false;
-						break;
-                    }
-                }
-            }
-			if(!flag) break;
-        }
-		// no break, means classroom avaliable
+		
+		// check classroom type and capacity
+		if (classroom_buffer.type != type ) flag = false;
+		if (classroom_buffer.capacity >= capacity ) flag = false;
+
+		// check the classroom usage
+		if(flag){
+			for (j = 0; j < 7; j++){
+				for (k = 0; k < 13; k++){
+					if (usage[j*7+k] == true){
+						if (classroom_buffer.usage[j][k] == true){
+							// if this classroom unavaliable then
+							flag = false;
+							break;
+						}
+					}
+				}
+				if(!flag) break;
+			}
+		}
+
+		// flag = true means classroom avaliable
 		// store it in the list and update the number indicator
         if (flag){
             (*classroom_list)[avaliable_number] = classroom_buffer;
@@ -364,7 +374,7 @@ int main() {
 	search_usage[1*7+2] = 1;
 	search_usage[1*7+3] = 1;
 	search_usage[4*7+1] = 1;
-	length_ava_list = search_classroom_by_usage(&ava_list, search_usage);
+	length_ava_list = search_classroom(&ava_list, 2, 55, search_usage);
 	printf("There are %d avaliable for the usage\n", length_ava_list);
 	
 	for (i = 0; i < length_ava_list; i++){

@@ -17,6 +17,6 @@ struct _Classroom {
 bool read_classroom_by_row(struct _Classroom *classroom, int row);
 bool read_classroom_by_id(struct _Classroom *classroom, int id);
 bool update_classroom_usage(struct _Classroom *classroom);
-int search_classroom_by_usage(struct _Classroom **classroom_list, bool *usage);
+int search_classroom(struct _Classroom **classroom_list,int type, int capacity, bool *usage);
 
 #endif
