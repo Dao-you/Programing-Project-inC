@@ -4,8 +4,8 @@
 #include <stdbool.h>
 
 struct _Userdata{
-    char account[20]; //帳號
-    char password[20]; //密碼
+    char account[128]; //帳號
+    char password[128]; //密碼
     char symbol[2]; //管理員:m 老師:t 學生:s
 };
 

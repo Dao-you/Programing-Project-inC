@@ -54,52 +54,65 @@ bool read_userdata_by_id(struct _Userdata *userdata,int id){
 }
 
 // Update the userdata, argument is struct _Userdata and pass by pointer.
-bool update_userdata(struct _Userdata *userdata){
-    long long line_pos = -1;
-    size_t line_length;
-    int data_length;
-    char *value;
+bool update_userdata(struct _Userdata *userdata) {
+    FILE *fp = fopen("./user_data/userdata.csv", "r+"); // Open file
 
-    FILE *fp=fopen("./user_data/userdata.csv","r+");
-    bool flag = false;
-
-    if(!fp){
+    // Check if the file is opened successfully
+    if (!fp) {
         printf("Can't open the user file\n");
         return false;
     }
-    else{
-        char buffer[1024];
-        while( fgets(buffer,1024,fp) != NULL ){
-            line_length = strlen(buffer) + 1;
-            value=strtok(buffer, ",");
-            if(!(strcmp(value,userdata->account))){
-                flag = true;
-                line_pos = ftell(fp);
-                break;
-            }
-        }
 
-        if(flag){
-            fseek(fp, line_pos - line_length, SEEK_SET);
-            data_length=fprintf(fp,"%s,%s,%c",
-                                userdata->account,
-                                userdata->password,
-                                userdata->symbol);
-            for (int i = data_length; i < strlen(buffer); i++) {
-                fputc(' ', fp);
-            }
-            fclose(fp);
-            return true;
-        }
-        else{
-            fclose(fp);
-            return false;
-        }
+    char buffer[1024];
+    long long line_pos = -1; // Position of the found line
+    size_t line_length; // Length of a line
+    bool flag = false; // Flag to indicate if the line is found
 
+    // Find the line to update
+    while (fgets(buffer, sizeof(buffer), fp) != NULL) {
+        line_length = strlen(buffer);
+        char *value = strtok(buffer, ",");
+        // Check if the account matches
+        if (!(strcmp(value, userdata->account))) {
+            flag = true;
+            // Record the position before the line's contents for potential update
+            line_pos = ftell(fp) - line_length - 1; // excluding the newline character
+            break;
+        }
+    }
+
+    if (flag) {
+        // Find file size and remaining data size after the line to be updated
+        fseek(fp, 0, SEEK_END);
+        long file_size = ftell(fp);
+        fseek(fp, line_pos + line_length + 1, SEEK_SET); // Move past the line
+
+        long long remaining_data_size = file_size - ftell(fp);
+
+        // Read remaining data after the updated line
+        char *remaining_data = (char *)malloc(remaining_data_size);
+        fread(remaining_data, sizeof(char), remaining_data_size, fp);
+
+        // Move back to the position of the line to update
+        fseek(fp, line_pos, SEEK_SET);
+
+        // Write the new user data without a newline character
+        fprintf(fp, "%s,%s,%s", userdata->account, userdata->password, userdata->symbol);
+
+        // Write the remaining data after the updated line
+        fwrite(remaining_data, sizeof(char), remaining_data_size, fp);
+
+        // Close file and free memory
+        fclose(fp);
+        free(remaining_data);
+        return true;
+    } else {
+        fclose(fp);
+        return false; // Return false if the account is not found
     }
 }
 
-
+// return true if the password meet the requires
 bool password_strenghten(char *password){
     int length = strlen(password);
     bool has_upper = 0, has_lower = 0;
@@ -128,10 +141,10 @@ bool password_strenghten(char *password){
     }
 
     // Check for duplicate strings with the same length exceeding 2
-    for (int i = 0; i < length - 2; i++) {
-        for (int j = i + 2; j < length - 1; j++) {
-            if (strncmp(&password[i], &password[j], 3) == 0) {
-                printf("不得出現長度大於 2 的重複字串。\n");
+    for (int i = 0; i < length - 4; i++) {
+        for (int j = i + 4; j < length - 1; j++) {
+            if (strncmp(&password[i], &password[j], 4) == 0) {
+                printf("不得出現長度大於 4 的重複字串。\n");
                 return false;
             }
         }
@@ -140,6 +153,31 @@ bool password_strenghten(char *password){
     return true;
 }
 
+// modify password and update database driectly
+void password_modify(struct _Userdata *userdata){
+        char password[128];
+        
+        printf("考量資通安全，密碼需符合以下要求:\n");
+        printf("1. 可以使用英文字母和符號，並建議加入符號\n");
+        printf("2. 密碼長度應該大於 8 個字元\n");
+        printf("3. 密碼長度不可超過 127 個字元\n");
+        printf("4. 需同時使用大小寫英文字母\n");
+        printf("5. 不可包含長度大於 4 的重複字串\n");
+        printf("\n");
+        printf("請輸入新密碼:");
+        scanf("%s",password);
+
+        while ( !password_strenghten(password) ) {
+            printf("密碼不符合要求，請重新輸入。\n\n");
+            printf("請輸入新密碼:");
+            scanf("%s",password);
+        }
+
+        strcpy(userdata -> password, password);
+        update_userdata(userdata);
+}
+
+// Return the current userdata
 struct _Userdata login(){
     struct _Userdata userdata;
     char account[128], password[128];
@@ -157,28 +195,12 @@ struct _Userdata login(){
         printf("\n請輸入密碼:");
         scanf("%s",password);
     }
-
+    
     // 判斷密碼是否為預設密碼1234，若為預設密碼則請使用者更新密碼
     if(!strcmp(userdata.password,"1234")){
         printf("\n請更改密碼!\n");
-        printf("考量資通安全，密碼需符合以下要求:\n");
-        printf("1. 可以使用英文字母和符號\n");
-        printf("2. 需同時使用大小寫英文字母\n");
-        printf("3. 不可包含重複的字串\n");
-        printf("\n");
-        printf("請輸入新密碼:");
-        scanf("%s",password);
-
-        while ( password_strenghten(password) ) {
-            printf("密碼不符合要求，請重新輸入。\n\n");
-            printf("請輸入新密碼:");
-            scanf("%s",password);
-        }
-
-        strcpy(userdata.password, password);
-        update_userdata(&userdata);
+        password_modify(&userdata);
     }
 
-    printf("%d, 登入成功!", userdata.account);
     return userdata;
 }

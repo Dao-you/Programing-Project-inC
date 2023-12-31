@@ -20,7 +20,7 @@ int main(){
     printf("登入帳號為員工編號或學號\n");
     printf("教職員工:001-500\n");
     printf("一般學生:1120001-1125000\n");
-    printf("首次登入的預設密碼為 1234。");
+    printf("首次登入的預設密碼為 1234。\n");
 
     printf("\n");
 
@@ -33,6 +33,8 @@ int main(){
     printf("\n");
 
     user = login();
+    printf("\n");
+    printf("%s, 登入成功!\n", user.account);
 
     return 0;
 }
