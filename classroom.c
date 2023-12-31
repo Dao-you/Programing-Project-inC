@@ -176,7 +176,7 @@ int search_classroom(struct _Classroom **classroom_list,int type, int capacity, 
 		
 		// check classroom type and capacity
 		if (classroom_buffer.type != type ) flag = false;
-		if (classroom_buffer.capacity >= capacity ) flag = false;
+		if (classroom_buffer.capacity <= capacity ) flag = false;
 
 		// check the classroom usage
 		if(flag){
@@ -339,6 +339,7 @@ int main() {
 
 	printf("\n----------------------\n");
 
+	char weekdays[7][4] = {"一", "二", "三", "四", "五", "六", "日"};
 	int id = 30211;
 	printf("Search ID %d:\n", id);
 	if( read_classroom_by_id(&classroom, id) ){
@@ -346,14 +347,17 @@ int main() {
 		printf("%d\t", classroom.type);
 		printf("%s\t", classroom.wholename);
 		printf("\n");
+		printf("   1 2 3 4 5 6 7 8 9 A B C D\n");
 		for (j = 0; j < 7; j++)
 		{
+			printf("%s ", weekdays[j]);
 			for (k = 0; k < 13; k++)
 			{
 				// if(classroom.usage[j][k]) printf("1 ");
 				// else                      printf("0 ");
 				printf("%d ", classroom.usage[j][k]);
 			}
+			printf("\n");
 		}
 	}
 
@@ -374,7 +378,8 @@ int main() {
 	search_usage[1*7+2] = 1;
 	search_usage[1*7+3] = 1;
 	search_usage[4*7+1] = 1;
-	length_ava_list = search_classroom(&ava_list, 2, 55, search_usage);
+	length_ava_list = search_classroom(&ava_list, 2, 80, search_usage);
+	printf("Search type 2, capacity 80 and usage 一:3、4, 四:2...\n");
 	printf("There are %d avaliable for the usage\n", length_ava_list);
 	
 	for (i = 0; i < length_ava_list; i++){
