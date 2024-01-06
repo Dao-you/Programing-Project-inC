@@ -42,9 +42,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="classroom.h" />
-		<Unit filename="login.c">
+		<Unit filename="communication.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="communication.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
