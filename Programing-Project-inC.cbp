@@ -34,6 +34,10 @@
 		<Unit filename=".gitattributes" />
 		<Unit filename=".gitignore" />
 		<Unit filename="Programing-Project-inC.cbp" />
+		<Unit filename="bulletin_board.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="bulletin_board.h" />
 		<Unit filename="classroom.c">
 			<Option compilerVar="CC" />
 		</Unit>

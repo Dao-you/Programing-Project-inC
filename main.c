@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include "classroom.h"
 #include "userdata.h"
+#include "bulletin_board.h"
+
 
 int main(){
 
@@ -26,6 +28,7 @@ int main(){
 
     printf("\n公告---------------------------\n");
 
+    bulletinshow();
     // 請在這裡載入並顯示公告
 
     printf("---------------------------------\n");
