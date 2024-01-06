@@ -194,6 +194,22 @@ void password_modify(struct _Userdata *userdata){
         update_userdata(userdata);
 }
 
+// for admin to reset password of any user
+void admin_resetpassword(){
+    char id[128];
+    struct _Userdata user_to_reset;
+    
+    while(1){
+        printf("請輸入需要重設密碼的用戶帳號: ");
+        scanf("%s", id);
+        if( !read_userdata_by_id(&user_to_reset, atoi(id)) ) printf("查無此用戶");
+        else{
+            strcpy(user_to_reset.password, "1234");
+            update_userdata(&user_to_reset);
+        }
+    }
+}
+
 // Return the current userdata
 struct _Userdata login(){
     struct _Userdata userdata;

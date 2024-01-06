@@ -52,7 +52,7 @@ void markasread(char *filename) {
     }
 
     // Process each line in the CSV file
-    char line[1000]; // Adjust the size as needed
+    char line[2048]; // Adjust the size as needed
     while (fgets(line, sizeof(line), file) != NULL) {
         // Mark the first character as '1'
         if (line[0] != '\0' && line[0] != '\n') {
@@ -73,6 +73,123 @@ void markasread(char *filename) {
 
     // printf("File %s marked as read.\n", filename);
     return;
+}
+
+// Function to modify the first character of a specific line in a file to '0'
+void msrkasunread(struct _Userdata user, int lineNumber) {
+    char filename_buffer[128];
+
+    strcpy(filename_buffer, "./user_data/");
+    strcat(filename_buffer, user.account);
+    strcat(filename_buffer, "_received.csv");
+
+    // Open the file in read mode
+    FILE *file = fopen(filename_buffer, "r");
+    
+    // Check if the file is opened successfully
+    if (file == NULL) {
+        printf("Error: Unable to open file %s\n", filename_buffer);
+        return;
+    }
+
+    // Open a temporary file in write mode
+    FILE *tempFile = fopen("temp.csv", "w");
+
+    // Check if the temporary file is opened successfully
+    if (tempFile == NULL) {
+        printf("Error: Unable to create temporary file\n");
+        fclose(file);
+        return;
+    }
+
+    // Process each line in the CSV file
+    char line[2048]; // Adjust the size as needed
+    int currentLine = 1;
+    while (fgets(line, sizeof(line), file) != NULL) {
+        // Check if the current line matches the specified line number
+        if (currentLine == lineNumber) {
+            // Modify the first character to '0'
+            if (line[0] != '\0' && line[0] != '\n') {
+                line[0] = '0';
+            }
+        }
+
+        // Write the line (modified or unmodified) to the temporary file
+        fputs(line, tempFile);
+        currentLine++;
+    }
+
+    // Close both files
+    fclose(file);
+    fclose(tempFile);
+
+    // Replace the original file with the temporary file
+    remove(filename_buffer);
+    rename("temp.csv", filename_buffer);
+
+    // printf("First character of line %d in file %s modified to '0'.\n", lineNumber, filename_buffer);
+}
+
+#include <stdio.h>
+
+// Function to delete a specific line from a file
+void deletemessage(struct _Userdata user, int lineNumber) {
+    char filename_buffer[128];
+
+    strcpy(filename_buffer, "./user_data/");
+    strcat(filename_buffer, user.account);
+    strcat(filename_buffer, "_received.csv");
+
+    // Open the file in read mode
+    FILE *file = fopen(filename_buffer, "r");
+
+    // Open a temporary file in write mode
+    FILE *tempFile = fopen("temp.csv", "w");
+
+    // Check if the temporary file is opened successfully
+    if (tempFile == NULL) {
+        printf("Error: Unable to create temporary file\n");
+        fclose(file);
+        return;
+    }
+
+    // Process each line in the CSV file
+    char line[2048];
+    int currentLine = 1;
+    while (fgets(line, sizeof(line), file) != NULL) {
+        // Check if the current line should be deleted
+        if (currentLine != lineNumber) {
+            // Write the line to the temporary file if it shouldn't be deleted
+            fputs(line, tempFile);
+        }
+        currentLine++;
+    }
+
+    // Close both files
+    fclose(file);
+    fclose(tempFile);
+
+    // Replace the original file with the temporary file
+    remove(filename_buffer);
+    rename("temp.csv", filename_buffer);
+
+    // printf("Line %d deleted from file %s.\n", lineNumber, filename_buffer);
+}
+
+// Function to delete a message at a specific index in the array
+void deleteMessageinarray(struct _Message *messages, int length, int indexToDelete) {
+    // Check if the index is within bounds
+    if (indexToDelete < 0 || indexToDelete >= length) {
+        printf("Error: Index out of bounds\n");
+        return;
+    }
+
+    // Shift elements to overwrite the message at the specified index
+    for (int i = indexToDelete; i < length - 1; i++) {
+        messages[i] = messages[i + 1];
+    }
+
+    // printf("Message at index %d deleted.\n", indexToDelete);
 }
 
 // return if message send successfully
@@ -237,6 +354,7 @@ bool writemessage(struct _Userdata user,char *receiver) {
         scanf("%s", Message.receiver);
     }
     else {
+        printf("%s\n", receiver);
         strcpy(Message.receiver, receiver);
     }
 
@@ -314,7 +432,6 @@ void listmessage(struct _Message *list, int number){
                                 list[i].content);
     }
     free(difftime);
-    
 }
 
 // print message list in the console
@@ -335,6 +452,19 @@ void logmessage(struct _Message *list, int number){
     free(difftime);
     
 }
+
+void viewmessage(struct _Message message){
+    char strtime[128];
+    char user_input_char;
+    bool flag = true;
+    strftime(strtime, 128, "%Y/%-m/%-d %H:%M %A", &message.time);
+
+    printf("時間  : %s\n", strtime);
+    printf("傳送者: %s\n", message.sender);
+    printf("收件者: %s\n", message.receiver);
+    printf("內容  :\n%s", message.content);
+}
+
 /*
 int main(){
 
@@ -358,7 +488,6 @@ int main(){
     strcpy(user.symbol, "t");
 
     unread_count = countunread( user );
-    printf("您有 %d 則新訊息，共 %d 則訊息\n", unread_count, message_count);
     message_count = readmessage(message_list, user, "read");
 
     // printf("讀取\t傳送者\t內容\n");
