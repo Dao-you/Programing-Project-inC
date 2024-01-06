@@ -25,6 +25,57 @@ char* restoreCommas(char *str) {
     return str;
 }
 
+// Function to mark the first character of each line in a CSV file as '1'
+void markasread(char *filename) {
+    // Check if the filename is provided
+    if (filename == NULL) {
+        printf("Error: File name is NULL\n");
+        return;
+    }
+
+    // Open the file in read mode
+    FILE *file = fopen(filename, "r");
+    
+    // Check if the file is opened successfully
+    if (file == NULL) {
+        printf("Error: Unable to open file %s\n", filename);
+        return;
+    }
+
+    // Open a temporary file in write mode
+    FILE *tempFile = fopen("temp.csv", "w");
+
+    // Check if the temporary file is opened successfully
+    if (tempFile == NULL) {
+        printf("Error: Unable to create temporary file\n");
+        fclose(file);
+        return;
+    }
+
+    // Process each line in the CSV file
+    char line[1000]; // Adjust the size as needed
+    while (fgets(line, sizeof(line), file) != NULL) {
+        // Mark the first character as '1'
+        if (line[0] != '\0' && line[0] != '\n') {
+            line[0] = '1';
+        }
+
+        // Write the modified line to the temporary file
+        fputs(line, tempFile);
+    }
+
+    // Close both files
+    fclose(file);
+    fclose(tempFile);
+
+    // Replace the original file with the temporary file
+    remove(filename);
+    rename("temp.csv", filename);
+
+    // printf("File %s marked as read.\n", filename);
+    return;
+}
+
 // return if message send successfully
 bool sendmessage(struct _Message Message) {
 
@@ -147,7 +198,8 @@ int readmessage(struct _Message *list, struct _Userdata user, char *mode) {
         line++;
     }
 
-    // fclose(fp);
+    fclose(fp);
+    markasread(filename_buffer);
     // list = realloc(list, sizeof(struct _Message)*line);
     return line;
 }
