@@ -11,5 +11,11 @@ struct _Message {
     char content[1024];
 };
 
+bool sendmessage(struct _Message Message);
+int readmessage(struct _Message *list, struct _Userdata user, char *mode);
+int countunread(struct _Userdata user);
+bool writemessage(struct _Userdata user,char *receiver);
+void listmessage(struct _Message *list, int number);
+void logmessage(struct _Message *list, int number);
 
 #endif

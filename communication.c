@@ -38,7 +38,6 @@ void markasread(char *filename) {
     
     // Check if the file is opened successfully
     if (file == NULL) {
-        printf("Error: Unable to open file %s\n", filename);
         return;
     }
 
@@ -122,6 +121,7 @@ bool sendmessage(struct _Message Message) {
 // input a unmalloc _Message pointer to save the array
 // input a user to get all of the received message
 // mode "read" to read messages the user received
+// mode "unread" equals ro "read" but won't mark as read
 // mode "log"  to read messages the user sent
 // return the number of the unread message
 // return -1 if the reading process got problem
@@ -150,7 +150,7 @@ int readmessage(struct _Message *list, struct _Userdata user, char *mode) {
     strcpy(filename_buffer, "./user_data/");
     strcat(filename_buffer, user.account);
 
-    if( strcmp(mode, "read") == 0 )
+    if( strcmp(mode, "read") == 0 || strcmp(mode, "unread") == 0 )
         fp = fopen( strcat(filename_buffer, "_received.csv"), "r+" );
     else if( strcmp(mode, "log") == 0 )
         fp = fopen( strcat(filename_buffer, "_sent.csv"), "r+" );
@@ -199,17 +199,20 @@ int readmessage(struct _Message *list, struct _Userdata user, char *mode) {
     }
 
     fclose(fp);
-    markasread(filename_buffer);
+    if(strcmp(mode, "unread") != 0 ) markasread(filename_buffer);
     // list = realloc(list, sizeof(struct _Message)*line);
     return line;
 }
 
 // input a _Message list to count unread number
-int countunread(struct _Message *list, int num_messages) {
+int countunread(struct _Userdata user) {
     int unread_count = 0;
-    
+    int num_messages;
+    struct _Message message_list[128];
+
+    num_messages = readmessage(message_list, user, "unread");
     for (int i = 0; i < num_messages; ++i) {
-        if (!list[i].read) {
+        if (!message_list[i].read) {
             unread_count++;
         }
     }
@@ -297,11 +300,12 @@ void listmessage(struct _Message *list, int number){
     int i;
     char *difftime;
 
-    printf("    來自\t時間     \t內容\n");
+    printf("  \t   \t來自\t時間     \t內容\n");
     for (i = 0; i < number; i++){
+        printf("%d.\t", i+1);
         // print if the message is new
-        if(list[i].read) printf("[ ] ");
-        else             printf("[*] ");
+        if(list[i].read) printf("[ ]\t");
+        else             printf("[*]\t");
         
         // compare time and return the string directly
         difftime = timeDifference(list[i].time);
@@ -319,8 +323,9 @@ void logmessage(struct _Message *list, int number){
     int i;
     char *difftime;
 
-    printf("送往\t時間\t內容\n");
+    printf("  \t送往\t時間\t內容\n");
     for (i = 0; i < number; i++){
+        printf("%d.\t", i+1);
         // compare time and return the string directly
         difftime = timeDifference(list[i].time);
         printf("%s\t%s\t%s",    list[i].receiver, 
@@ -352,9 +357,9 @@ int main(){
     strcpy(user.password, "1234");
     strcpy(user.symbol, "t");
 
-    message_count = readmessage(message_list, user, "read");
-    unread_count = countunread( message_list, message_count );
+    unread_count = countunread( user );
     printf("您有 %d 則新訊息，共 %d 則訊息\n", unread_count, message_count);
+    message_count = readmessage(message_list, user, "read");
 
     // printf("讀取\t傳送者\t內容\n");
     // for (i = 0; i < message_count; i++){

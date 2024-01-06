@@ -156,6 +156,7 @@ bool password_strenghten(char *password){
 // modify password and update database driectly
 void password_modify(struct _Userdata *userdata){
         char password[128];
+        char check   [128] = "1234";
         
         printf("考量資通安全，密碼需符合以下要求:\n");
         printf("1. 可以使用英文字母和符號，並建議加入符號\n");
@@ -164,14 +165,30 @@ void password_modify(struct _Userdata *userdata){
         printf("4. 需同時使用大小寫英文字母\n");
         printf("5. 不可包含長度大於 4 的重複字串\n");
         printf("\n");
-        printf("請輸入新密碼:");
-        scanf("%s",password);
 
-        while ( !password_strenghten(password) ) {
-            printf("密碼不符合要求，請重新輸入。\n\n");
+        do{
             printf("請輸入新密碼:");
             scanf("%s",password);
-        }
+
+            while ( !password_strenghten(password) ) {
+                printf("密碼不符合要求，請重新輸入。\n\n");
+                printf("請輸入新密碼:");
+                scanf("%s",password);
+            }
+
+            printf("請再輸入一次以確認密碼:");
+            scanf("%s", check);
+            
+            while( strcmp(password, check) != 0 ){
+                printf("確認密碼不相符\n");
+                printf("請再輸入一次以確認密碼，或輸入 0 重新輸入密碼: ");
+                scanf("%s", check);
+                if (strcmp("0", check) == 0){
+                    break;
+                }
+            }
+            
+        }while( strcmp("0", check) == 0 );
 
         strcpy(userdata -> password, password);
         update_userdata(userdata);

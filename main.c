@@ -5,7 +5,9 @@
 #include "classroom.h"
 #include "userdata.h"
 #include "bulletin_board.h"
+#include "communication.h"
 
+#define MENU_NUMBER 4
 
 int main(){
 
@@ -26,18 +28,65 @@ int main(){
 
     printf("\n");
 
-    printf("\n公告---------------------------\n");
+    printf("\n公告-----------------------------\n");
 
+    // show all of the notice
     bulletinshow();
-    // 請在這裡載入並顯示公告
 
-    printf("---------------------------------\n");
+    printf("\n---------------------------------\n");
 
     printf("\n");
 
     user = login();
     printf("\n");
     printf("%s, 登入成功!\n", user.account);
+
+    int unread_count = countunread(user);
+    if(unread_count != 0) printf("您有 %d 則未讀訊息，請記得確認重要訊息!\n", unread_count);
+    else printf("您沒有未讀訊息!\n");
+
+    // to store the options in the menu
+    char *menu[MENU_NUMBER] = {
+        "更改登入密碼",
+        "查看訊息",
+        "傳送訊息",
+        "期初教室登記系統"
+    };
+
+    while(true){
+
+        printf("\n---------------------------------\n");
+
+        printf("\n");
+
+        printf("功能選單:\n");
+        for (i = 0; i < MENU_NUMBER; i++){
+            printf("%d.\t", i+1);
+            printf("%s\n", menu[i]);
+        }
+
+        printf("\n");
+        printf("請輸入選單編號:");
+        char user_input_int;
+        fflush(stdin);
+        scanf("%c", &user_input_int);
+
+        switch (user_input_int){
+            case '1': // 更改登入密碼
+                printf("\n%c.%s\n\n", user_input_int, menu[user_input_int]);
+                password_modify(&user);
+                printf("\n密碼更改完成，請重新登入");
+                return 0;
+            
+            case '2': // 查看訊息
+                printf("\n%c.%s\n\n", user_input_int, menu[user_input_int]);
+
+
+            default:
+                break;
+        }
+
+    }
 
     return 0;
 }
