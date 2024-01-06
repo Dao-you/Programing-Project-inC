@@ -206,6 +206,7 @@ void admin_resetpassword(){
         else{
             strcpy(user_to_reset.password, "1234");
             update_userdata(&user_to_reset);
+            break;
         }
     }
 }

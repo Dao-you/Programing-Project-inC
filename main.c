@@ -29,7 +29,7 @@ int main(){
 
     printf("\n");
 
-    printf("\n公告-----------------------------\n");
+    printf("\n公告-----------------------------\n\n");
 
     // show all of the notice
     bulletinshow();
@@ -61,6 +61,7 @@ int main(){
     };
 
     char *admin_menu[] = {
+        "退出",
         "重設用戶密碼",
         "登記公告"
     };
@@ -230,7 +231,46 @@ int main(){
 
             case '6': // 管理員系統
                 if(user.symbol[0] == 'm'){
-                    printf("還沒做好\n");
+                    do
+                    {
+                        flagi = false;
+                        printf("\n---------------------------------\n");
+
+                        printf("\n");
+
+                        printf("功能選單:\n");
+                        for (i = 0; i < sizeof(admin_menu) / sizeof(admin_menu[0]); i++){
+                            printf("%d.\t", i);
+                            printf("%s\n", admin_menu[i]);
+                        }
+
+                        printf("\n");
+                        printf("請輸入選單編號:");
+                        fflush(stdin);
+                        scanf("%c", &user_input_char);
+
+                        switch (user_input_char){
+                        case '0':
+                            printf("正在退出\n");
+                            break;
+                        
+                        case '1':
+                            printf("\n---------------------------------\n");
+                            printf("\n%c.%s\n\n", user_input_char, admin_menu[1]);
+                            admin_resetpassword();
+                            break;
+                        
+                        case '2':
+                            printf("\n%c.%s\n\n", user_input_char, admin_menu[2]);
+                            bulletinwrite(user.account);
+                            break;
+
+                        default:
+                            break;
+                        }
+
+                    } while (flagi);
+                    
                 }
                 else{
                     printf("權限不足，存取遭拒\n");

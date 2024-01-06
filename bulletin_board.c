@@ -6,7 +6,11 @@
 #include "bulletin_board.h"
 
 
-char *file_location[]={"Bulletin_Board\\BulletinBoard.csv","Bulletin_Board\\log.csv","Bulletin_Board\\copy.csv"};
+char *file_location[]={
+    "./Bulletin_Board/BulletinBoard.csv", 
+    "./Bulletin_Board/log.csv", 
+    "./Bulletin_Board/copy.csv"
+};
 
 struct bulletin
 {
@@ -81,7 +85,7 @@ void bulletinshow()
     char s[1024],*token,*pr[8]={"/","/","\t","\t\t\t\t\t","\t\t","/","/","\n"};
     if((fgets(s,sizeof(s),f))==NULL)
         {
-            printf("暫無公告");
+            printf("暫無公告\n");
         }
     else
         {
@@ -122,7 +126,7 @@ bool date_confirmation(int time[3])
 }
 
 
-void bulletinwrite(char user[32])
+void bulletinwrite(char user[128])
 {
     bulletinconfirm();
     struct bulletin re[2];
