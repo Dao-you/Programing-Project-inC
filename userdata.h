@@ -13,6 +13,6 @@ bool read_userdata_by_id(struct _Userdata *userdata,int id);
 bool update_userdata(struct _Userdata *userdata);
 struct _Userdata login();
 void password_modify(struct _Userdata *userdata);
-void admin_resetpassword()
+void admin_resetpassword();
 
 #endif
