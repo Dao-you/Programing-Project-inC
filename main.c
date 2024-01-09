@@ -18,6 +18,8 @@ int main(){
 
     int i, j, k;
 
+    
+    printf("\033[0;0H\033[2J");
     printf("歡迎使用教室使用登記系統！\n");
     printf("當前帳號數量:5500\n");
 
@@ -41,11 +43,6 @@ int main(){
 
     user = login();
     printf("\n");
-    printf("%s, 登入成功!\n", user.account);
-
-    int unread_count = countunread(user);
-    if(unread_count != 0) printf("您有 %d 則未讀訊息，請記得確認重要訊息!\n", unread_count);
-    else printf("您沒有未讀訊息!\n");
 
     // to store all the messages
     struct _Message message_list[128];
@@ -70,6 +67,14 @@ int main(){
 
     do{
         flag = true;
+
+        printf("\033[0;0H\033[2J");
+        printf("%s, 登入成功!\n", user.account);
+
+        int unread_count = countunread(user);
+        if(unread_count != 0) printf("您有 %d 則未讀訊息，請記得確認重要訊息!\n", unread_count);
+        else printf("您沒有未讀訊息!\n");
+
         printf("\n---------------------------------\n");
 
         printf("\n");
@@ -87,6 +92,7 @@ int main(){
         fflush(stdin);
         scanf("%c", &user_input_char);
 
+        printf("\033[0;0H\033[2J");
         printf("\n---------------------------------\n\n");
         switch (user_input_char){
             case '0': // 退出系統
@@ -106,7 +112,6 @@ int main(){
                 
                 do{ // flagi
                     flagi = true;
-                    printf("\n---------------------------------\n\n");
                     listmessage(message_list, message_count);
                     printf("您有 %d 則新訊息，共 %d 則訊息\n", unread_count, message_count);
                     printf("\n");
@@ -119,6 +124,7 @@ int main(){
                         continue;
                     }
 
+                    printf("\033[0;0H\033[2J");
                     viewmessage(message_list[user_input_int-1]);
                     do{
                         flagj = false;
@@ -130,30 +136,36 @@ int main(){
                         scanf("%c", &user_input_char);
                         switch (user_input_char){
                             case '0': // 退出
-                                printf("正在退出\n");
+                                printf("\033[0;0H\033[2J");
+                                printf("退出訊息\n");
+                                printf("\n---------------------------------\n\n");
                                 break;
 
                             case '1': // 回覆
-                                printf("\n---------------------------------\n\n");
                                 writemessage(user, message_list[user_input_int-1].sender);
-                                printf("\n---------------------------------\n\n");
                                 break;
 
                             case '2': // 標記為未讀
                                 msrkasunread(user, user_input_int);
                                 message_list[user_input_int-1].read = false;
+                                printf("\033[0;0H\033[2J");
                                 printf("已標記為未讀\n");
+                                printf("\n---------------------------------\n\n");
                                 break;
 
                             case '3': // 刪除訊息
                                 deletemessage(user, user_input_int);
                                 deleteMessageinarray(message_list, message_count, user_input_int-1);
                                 message_count--;
+                                printf("\033[0;0H\033[2J");
                                 printf("已刪除訊息\n");
+                                printf("\n---------------------------------\n\n");
                                 break;
                             
                             default:
+                                printf("\033[0;0H\033[2J");
                                 printf("輸入格式錯誤，請重新輸入\n");
+                                printf("\n---------------------------------\n\n");
                                 flagj = true;
                                 break;
                         }
@@ -171,7 +183,6 @@ int main(){
                 
                 do{ // flagi
                     flagi = true;
-                    printf("\n---------------------------------\n\n");
                     logmessage(message_list, message_count);
                     printf("共 %d 則訊息\n", message_count);
                     printf("\n");
@@ -184,6 +195,7 @@ int main(){
                         continue;
                     }
 
+                    printf("\033[0;0H\033[2J");
                     viewmessage(message_list[user_input_int-1]);
                     do{
                         flagj = false;
@@ -195,20 +207,22 @@ int main(){
                         scanf("%c", &user_input_char);
                         switch (user_input_char){
                             case '0': // 退出
-                                printf("正在退出\n");
+                                printf("\033[0;0H\033[2J");
+                                printf("退出訊息\n");
+                                printf("\n---------------------------------\n\n");
                                 break;
 
                             case '1': // 回覆
-                                printf("\n---------------------------------\n\n");
                                 writemessage(user, message_list[user_input_int-1].sender);
-                                printf("\n---------------------------------\n\n");
                                 break;
 
                             case '2': // 刪除訊息
                                 deletemessage(user, user_input_int);
                                 deleteMessageinarray(message_list, message_count, user_input_int-1);
                                 message_count--;
+                                printf("\033[0;0H\033[2J");
                                 printf("已刪除訊息\n");
+                                printf("\n---------------------------------\n\n");
                                 break;
                             
                             default:
@@ -276,7 +290,9 @@ int main(){
                 }
                 else{
                     printf("權限不足，存取遭拒\n");
-                    printf("請重新輸入\n");
+                    printf("按任意鍵繼續...\n");
+                    fflush(stdin);
+                    getchar();
                 }
                 break;
             

@@ -342,6 +342,7 @@ bool writemessage(struct _Userdata user,char *receiver) {
     
     struct _Message Message;
     char input_buffer[1024];
+    printf("\033[0;0H\033[2J");
     printf("撰寫新訊息:\n\n");
 
     // set sender
@@ -365,11 +366,15 @@ bool writemessage(struct _Userdata user,char *receiver) {
 
     printf("\n");
     if(sendmessage(Message)){
-        printf("訊息傳送成功!\n\n");
+        printf("訊息傳送成功!\n請按任意鍵繼續...\n");
+        fflush(stdin);
+        getchar();
         return true;
     }
     else{
-        printf("訊息傳送失敗!\n\n");
+        printf("訊息傳送失敗!\n請按任意鍵繼續...\n");
+        fflush(stdin);
+        getchar();
         return false;
     }
 

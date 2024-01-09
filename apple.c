@@ -13,7 +13,7 @@
     #define sleepMs(x) usleep(x * 1000)
 #endif
 
-#define PROJECTNAME "台北風光正，北科學子強， 科技創新樂，大道至真良。"
+#define PROJECTNAME "License: Simone Tmm (https://youtu.be/75HNLw9doeI)"
 #define DIRECTORY "frame"
 #define PREFISSO "/BA"
 #define FILETOT "/numberOfFrames.txt"
@@ -61,6 +61,7 @@ void play(char **frames, int totFrames)
 
     for(i=INIZIO;i<totFrames;i++)
     {
+        printf("\033[0;0H\033[2J");
         #if DEBUG
         char framesCount[100];
         sprintf(framesCount, "(frame: %d/%d) \n", i+1, totFrames);
@@ -76,7 +77,7 @@ void play(char **frames, int totFrames)
         #else
         printf("%s\n", frames[i]);
         sleepMs(WAIT);
-            #endif
+        #endif
     }
 
 }
@@ -99,7 +100,7 @@ void progressBar(int corrente, int tot, int r, int frames)
             printf("#");
         for(i=0;i<LEN-x;i++)
             printf("-");
-        printf("](%.2f%%)\n", p);
+        printf("](%.2f%%)", p);
     }
     else if(r==1 && frames==1)
     {
