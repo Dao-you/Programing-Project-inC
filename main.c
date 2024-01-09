@@ -6,6 +6,7 @@
 #include "userdata.h"
 #include "bulletin_board.h"
 #include "communication.h"
+#include "apple.h"
 
 
 int main(){
@@ -57,7 +58,8 @@ int main(){
         "查看已傳送的訊息",
         "傳送訊息",
         "期初教室登記系統",
-        "管理員系統"
+        "管理員系統",
+        "???????????"
     };
 
     char *admin_menu[] = {
@@ -171,7 +173,7 @@ int main(){
                     flagi = true;
                     printf("\n---------------------------------\n\n");
                     logmessage(message_list, message_count);
-                    printf("您有 %d 則新訊息，共 %d 則訊息\n", unread_count, message_count);
+                    printf("共 %d 則訊息\n", message_count);
                     printf("\n");
                     printf("請輸入訊息編號，或輸入 0 退出: ");
                     scanf("%d", &user_input_int);
@@ -277,6 +279,9 @@ int main(){
                     printf("請重新輸入\n");
                 }
                 break;
+            
+            case '7':
+                badapple();
 
             default:
                 printf("輸入錯誤，請重新輸入\n");

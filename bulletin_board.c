@@ -177,7 +177,8 @@ void bulletinwrite(char user[128])
     if (len > 0 && re[0].bulletin[len - 1] == '\n') {
         re[0].bulletin[len - 1] = '\0';
     }
-    printf("--------%s", re[0].bulletin);
+
+    // printf("[Debug]--------%s", re[0].bulletin);
     FILE *f[2];
     f[0]=fopen(file_location[0],"r+");
     f[1]=fopen(file_location[2],"w+");
