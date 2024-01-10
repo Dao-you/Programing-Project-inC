@@ -147,7 +147,7 @@ void initial_registration_show()
         }
     for(j=0;j<k;j++){
         if(r[j].id==conid){
-            printf("%d\t%s\t%s\t%d\t%d\n",r[j].id,r[j].nickname,r[j].wholename,r[j].type,r[j].type);
+            printf("%d\t%s\t%s\n",r[j].id,r[j].wholename);
             n=(update_classroom_usage(&r[j]));
             if(!n){
                 printf("更新失敗");

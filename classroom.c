@@ -8,7 +8,7 @@
 bool read_classroom_by_row(struct _Classroom *classroom, int row) {
 	// open file by route
 	FILE* fp = fopen("./Classroom_data/classroom_filtted_data.csv", "r");
-	
+
 	// check if file be opened successfully
 	if (!fp)    printf("Can't open the classroom file\n");
 	else
@@ -29,21 +29,21 @@ bool read_classroom_by_row(struct _Classroom *classroom, int row) {
 
 		// splitting the data
 		char* value = strtok(buffer, ",");
-		
+
 		// read data column by column
 		while (value)
 		{
-			
+
 			switch (column) {
 
 				case 0:
 					classroom -> id = atoi(value);
 					break;
-				
+
 				case 1:
 					strcpy(classroom -> nickname, value);
 					break;
-				
+
 				case 2:
 					classroom -> type = atoi(value);
 					break;
@@ -51,7 +51,7 @@ bool read_classroom_by_row(struct _Classroom *classroom, int row) {
 				case 3:
 					strcpy(classroom -> wholename, value);
 					break;
-				
+
 				case 4:
 					classroom -> capacity = atoi(value);
 					break;
@@ -75,7 +75,7 @@ bool read_classroom_by_row(struct _Classroom *classroom, int row) {
 bool read_classroom_by_id(struct _Classroom *classroom, int id) {
 	// open file by route
 	FILE* fp = fopen("./Classroom_data/classroom_filtted_data.csv", "r");
-	
+
 	// check if file be opened successfully
 	if (!fp)   printf("Can't open the classroom file\n");
 	else
@@ -110,20 +110,20 @@ bool read_classroom_by_id(struct _Classroom *classroom, int id) {
 			fclose(fp);
 			return false;
 		}
-		
+
 		// read data column by column
 		while (value)
 		{
-			
+
 			switch (column) {
 
 				case 0:
 					break;
-				
+
 				case 1:
 					strcpy(classroom -> nickname, value);
 					break;
-				
+
 				case 2:
 					classroom -> type = atoi(value);
 					break;
@@ -131,7 +131,7 @@ bool read_classroom_by_id(struct _Classroom *classroom, int id) {
 				case 3:
 					strcpy(classroom -> wholename, value);
 					break;
-				
+
 				case 4:
 					classroom -> capacity = atoi(value);
 					break;
@@ -145,9 +145,9 @@ bool read_classroom_by_id(struct _Classroom *classroom, int id) {
 			value = strtok(NULL, ",");
 			column++;
 		}
-	
+
 		fclose(fp);
-		return true;	
+		return true;
 	}
 	return false;
 }
@@ -173,7 +173,7 @@ int search_classroom(struct _Classroom **classroom_list,int type, int capacity, 
     i = 1;
     while (read_classroom_by_row(&classroom_buffer, i) == true){
         flag = true;
-		
+
 		// check classroom type and capacity
 		if (classroom_buffer.type != type ) flag = false;
 		if (classroom_buffer.capacity <= capacity ) flag = false;
@@ -198,6 +198,13 @@ int search_classroom(struct _Classroom **classroom_list,int type, int capacity, 
 		// store it in the list and update the number indicator
         if (flag){
             (*classroom_list)[avaliable_number] = classroom_buffer;
+            for(j=0;j<7;j++){
+                for(k=0;k<13;k++){
+                    if(usage[j*7+k] == true){
+                        (*classroom_list)[avaliable_number].usage[j][k]=1;
+                    }
+                }
+            }
             avaliable_number++;
         }
         i++;
@@ -214,11 +221,11 @@ bool update_classroom_usage(struct _Classroom *classroom){
 
 	// open file by route
 	FILE* fp = fopen("./Classroom_data/classroom_filtted_data.csv", "r+");
-	
+
 	// check if file be opened successfully
 	if (!fp)   printf("Can't open the classroom file\n");
 	else
-	{	
+	{
 		// to save a line of the file
 		char buffer[1024];
 
@@ -263,12 +270,12 @@ bool update_classroom_usage(struct _Classroom *classroom){
 									  classroom -> type,
 									  classroom -> wholename,
 									  classroom -> capacity     );
-				
+
 				// put the usage data via loop
 				// calculate the data_length, too
 				for (i = 0; i < 7; i++){
 					for (j = 0; j < 13; j++){
-						data_length += fprintf(fp, ",%d", 
+						data_length += fprintf(fp, ",%d",
 						                       classroom -> usage[i][j]);
 					}
 				}
@@ -279,7 +286,7 @@ bool update_classroom_usage(struct _Classroom *classroom){
                 for (int i = data_length; i < strlen(buffer); i++) {
                     fputc(' ', fp);
                 }
-				
+
 				// move the pointer back to the last
 				fseek(fp, line_pos, SEEK_SET);
 
@@ -294,13 +301,13 @@ bool update_classroom_usage(struct _Classroom *classroom){
 }
 
 /*
-int main() {	
+int main() {
 	int i, j, k;
 	struct _Classroom classroom;
 	struct _Classroom classroom_table[10];
 	// set the console to UTF-8 codec
 	system("chcp 65001");
-	
+
 	read_classroom_by_row(&classroom, 120);
 	printf("%d\t", classroom.id);
 	printf("%d\t", classroom.type);
@@ -332,7 +339,7 @@ int main() {
 				printf("%d ", classroom_table[i].usage[j][k]);
 			}
 		}
-		
+
 		printf("\n");
 
 	}
@@ -364,7 +371,7 @@ int main() {
 	printf("\n----------------------\n");
 
 	int x = 5, y = 7, v = 1;
-	printf("Modify the %d usage data which %d class in the %d day to %d.\n", 
+	printf("Modify the %d usage data which %d class in the %d day to %d.\n",
 			classroom.id, y, x, v);
 
 	classroom.usage[x-1][y-1] = v;
@@ -381,7 +388,7 @@ int main() {
 	length_ava_list = search_classroom(&ava_list, 2, 80, search_usage);
 	printf("Search type 2, capacity 80 and usage 一:3、4, 四:2...\n");
 	printf("There are %d avaliable for the usage\n", length_ava_list);
-	
+
 	for (i = 0; i < length_ava_list; i++){
 		printf("%d\t", ava_list[i].id);
 		printf("%s\t", ava_list[i].nickname);
