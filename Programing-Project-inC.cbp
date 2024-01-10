@@ -53,6 +53,10 @@
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="registration.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="registration.h" />
 		<Unit filename="userdata.c">
 			<Option compilerVar="CC" />
 		</Unit>
