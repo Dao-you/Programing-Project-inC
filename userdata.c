@@ -157,7 +157,7 @@ bool password_strenghten(char *password){
 void password_modify(struct _Userdata *userdata){
         char password[128];
         char check   [128] = "1234";
-        
+
         printf("考量資通安全，密碼需符合以下要求:\n");
         printf("1. 可以使用英文字母和符號，並建議加入符號\n");
         printf("2. 密碼長度應該大於 8 個字元\n");
@@ -178,7 +178,7 @@ void password_modify(struct _Userdata *userdata){
 
             printf("請再輸入一次以確認密碼:");
             scanf("%s", check);
-            
+
             while( strcmp(password, check) != 0 ){
                 printf("確認密碼不相符\n");
                 printf("請再輸入一次以確認密碼，或輸入 0 重新輸入密碼: ");
@@ -187,7 +187,7 @@ void password_modify(struct _Userdata *userdata){
                     break;
                 }
             }
-            
+
         }while( strcmp("0", check) == 0 );
 
         strcpy(userdata -> password, password);
@@ -198,14 +198,27 @@ void password_modify(struct _Userdata *userdata){
 void admin_resetpassword(){
     char id[128];
     struct _Userdata user_to_reset;
-    
+
     while(1){
         printf("請輸入需要重設密碼的用戶帳號: ");
         scanf("%s", id);
-        if( !read_userdata_by_id(&user_to_reset, atoi(id)) ) printf("查無此用戶");
+        if( !read_userdata_by_id(&user_to_reset, atoi(id)) ){
+            printf("查無此用戶，請按任意鍵繼續...\n");
+            fflush(stdin);
+            getchar();
+        }
         else{
             strcpy(user_to_reset.password, "1234");
-            update_userdata(&user_to_reset);
+            if( update_userdata(&user_to_reset) ){
+                printf("密碼修改成功，請按任意鍵繼續...\n");
+                fflush(stdin);
+                getchar();
+            }
+            else{
+                printf("密碼修改錯誤，請按任意鍵繼續...\n");
+                fflush(stdin);
+                getchar();
+            }
             break;
         }
     }
@@ -230,11 +243,13 @@ struct _Userdata login(){
         scanf("%s",password);
     }
 
+    userdata.symbol[1] = '\0';
+
     // 判斷密碼是否為預設密碼1234，若為預設密碼則請使用者更新密碼
     if(!strcmp(userdata.password,"1234")){
         printf("\n請更改密碼!\n");
         password_modify(&userdata);
     }
-    
+
     return userdata;
 }

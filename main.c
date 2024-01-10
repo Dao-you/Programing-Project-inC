@@ -6,7 +6,10 @@
 #include "userdata.h"
 #include "bulletin_board.h"
 #include "communication.h"
+#include "registration.h"
 #include "apple.h"
+
+#define MODE "./Bulletin_Board/mode.csv"
 
 
 int main(){
@@ -15,6 +18,10 @@ int main(){
     struct _Userdata user;
     // flag for while for user input
     bool flag = true, flagi, flagj, flagk;
+    char mode[8];
+    FILE *fp = fopen(MODE, "r");
+    fgets(mode, 8, fp);
+    fclose(fp);
 
     int i, j, k;
 
@@ -22,6 +29,8 @@ int main(){
     printf("\033[0;0H\033[2J");
     printf("歡迎使用教室使用登記系統！\n");
     printf("當前帳號數量:5500\n");
+
+    printf("目前開放登記對象為: %s\nm:管理員, t:老師, s:學生\n", mode);
 
     printf("\n");
 
@@ -62,7 +71,8 @@ int main(){
     char *admin_menu[] = {
         "退出",
         "重設用戶密碼",
-        "登記公告"
+        "登記公告",
+        "更改登記階段"
     };
 
     do{
@@ -93,7 +103,6 @@ int main(){
         scanf("%c", &user_input_char);
 
         printf("\033[0;0H\033[2J");
-        printf("\n---------------------------------\n\n");
         switch (user_input_char){
             case '0': // 退出系統
                 printf("正在退出系統");
@@ -243,16 +252,24 @@ int main(){
                 break;
 
             case '5': // 期初教室登記系統
+                printf("\n%c.%s\n\n", user_input_char, menu[5]);
+                if( strstr(mode, user.symbol) ){
+                    initial_registration_show();
+                }
+                else{
+                    printf("目前不開放登記!\n");
+                    printf("請按任意鍵繼續...");
+                    fflush(stdin);
+                    getchar();
+                }
                 break;
 
             case '6': // 管理員系統
+                printf("\n%c.%s\n\n", user_input_char, menu[6]);
                 if(user.symbol[0] == 'm'){
                     do
                     {
                         flagi = false;
-                        printf("\n---------------------------------\n");
-
-                        printf("\n");
 
                         printf("功能選單:\n");
                         for (i = 0; i < sizeof(admin_menu) / sizeof(admin_menu[0]); i++){
@@ -271,14 +288,65 @@ int main(){
                             break;
                         
                         case '1':
-                            printf("\n---------------------------------\n");
+                            printf("\033[0;0H\033[2J");
                             printf("\n%c.%s\n\n", user_input_char, admin_menu[1]);
                             admin_resetpassword();
                             break;
                         
                         case '2':
+                            printf("\033[0;0H\033[2J");
                             printf("\n%c.%s\n\n", user_input_char, admin_menu[2]);
                             bulletinwrite(user.account);
+
+                            printf("\n公告-----------------------------\n\n");
+                            bulletinshow();
+                            printf("\n---------------------------------\n");
+                            printf("請按任意鍵繼續...");
+                            fflush(stdin);
+                            getchar();
+
+                            break;
+                        
+                        case '3':
+                            printf("\n%c.%s\n\n", user_input_char, admin_menu[2]);
+                            do{ //flagk
+                                flagk = false;
+                                printf("\033[0;0H\033[2J");
+                                printf("\n0. 退出\n1. 不開放登記\n2. 開放教師登記\n3. 開放師生登記\n\n請輸入模式:");
+                                fflush(stdin);
+                                scanf("%c", &user_input_char);
+
+                                switch (user_input_char){
+                                    case '0':
+                                        break;
+
+                                    case '1':
+                                        fp = fopen(MODE, "w");
+                                        fprintf(fp, "m");
+                                        fclose(fp);
+                                        break;
+
+                                    case '2':
+                                        fp = fopen(MODE, "w");
+                                        fprintf(fp, "mt");
+                                        fclose(fp);
+                                        break;
+
+                                    case '3':
+                                        fp = fopen(MODE, "w");
+                                        fprintf(fp, "mts");
+                                        fclose(fp);
+                                        break;
+                                    
+                                    default:
+                                        flagk = true;
+                                        printf("輸入錯誤，請重新輸入\n");
+                                        printf("請按任意鍵繼續...");
+                                        fflush(stdin);
+                                        getchar();
+                                        break;
+                                }
+                            }while(flagk);
                             break;
 
                         default:
@@ -301,6 +369,9 @@ int main(){
 
             default:
                 printf("輸入錯誤，請重新輸入\n");
+                printf("請按任意鍵繼續...");
+                fflush(stdin);
+                getchar();
                 break;
         }
 

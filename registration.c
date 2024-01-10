@@ -54,14 +54,16 @@ void initial_registration_show()
         }
     }
     printf("\033[0;0H\033[2J");
+
+    printf("\n輸入要的課程時間\nK,結束輸入課程時間\nE,退出\n其他,星期1~7,節數1~9,A~D\n");
     do
     {
         week = 0;
         session = 0;
-        printf("\n輸入要的課程時間\nK,結束輸入課程時間\nE,退出\n其他,星期1~7,節數1~9,A~D\n輸入要得時間:");
         fflush(stdin);
+        printf("\n請輸入需要使用的時間:");
         scanf("%c,%c", &week, &session);
-        printf("\033[0;0H\033[2J");
+        // printf("\033[0;0H\033[2J");
         if (week == 'E' || week == 'e')
         {
             printf("退出教室選擇\n");
